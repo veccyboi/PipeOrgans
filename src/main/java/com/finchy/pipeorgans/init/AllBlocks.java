@@ -9,6 +9,7 @@ import com.finchy.pipeorgans.block.gedeckt.GedecktBlock;
 import com.finchy.pipeorgans.block.gedeckt.GedecktExtensionBlock;
 import com.finchy.pipeorgans.block.piccolo.PiccoloBlock;
 import com.finchy.pipeorgans.block.piccolo.PiccoloExtensionBlock;
+import com.finchy.pipeorgans.block.string.VerticalStringBlock;
 import com.finchy.pipeorgans.block.subbass.SubbassBlock;
 import com.finchy.pipeorgans.block.subbass.SubbassExtensionBlock;
 import com.finchy.pipeorgans.block.trompette.TrompetteBlock;
@@ -79,6 +80,9 @@ public class AllBlocks {
     public static final RegistryObject<TrompetteExtensionBlock> TROMPETTE_EXTENSION = registerBlockWithoutItem("trompette_extension",
             () -> new TrompetteExtensionBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)
                     .requiresCorrectToolForDrops()));
+
+    public static final RegistryObject<VerticalStringBlock> VERTICAL_STRING = registerBlockWithoutItem("vertical_string",
+            () -> new VerticalStringBlock(BlockBehaviour.Properties.copy(Blocks.TRIPWIRE)));
 
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
