@@ -9,6 +9,7 @@ import com.finchy.pipeorgans.block.gedeckt.GedecktBlock;
 import com.finchy.pipeorgans.block.gedeckt.GedecktExtensionBlock;
 import com.finchy.pipeorgans.block.piccolo.PiccoloBlock;
 import com.finchy.pipeorgans.block.piccolo.PiccoloExtensionBlock;
+import com.finchy.pipeorgans.block.string.TiedFenceBlock;
 import com.finchy.pipeorgans.block.string.VerticalStringBlock;
 import com.finchy.pipeorgans.block.subbass.SubbassBlock;
 import com.finchy.pipeorgans.block.subbass.SubbassExtensionBlock;
@@ -83,6 +84,9 @@ public class AllBlocks {
 
     public static final RegistryObject<VerticalStringBlock> VERTICAL_STRING = registerBlockWithoutItem("vertical_string",
             () -> new VerticalStringBlock(BlockBehaviour.Properties.copy(Blocks.TRIPWIRE)));
+
+    public static final RegistryObject<TiedFenceBlock> TIED_FENCE = registerBlockWithoutItem("tied_fence",
+            () -> new TiedFenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_FENCE)));
 
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
