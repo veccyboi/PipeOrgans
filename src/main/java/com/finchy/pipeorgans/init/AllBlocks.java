@@ -9,8 +9,8 @@ import com.finchy.pipeorgans.block.gedeckt.GedecktBlock;
 import com.finchy.pipeorgans.block.gedeckt.GedecktExtensionBlock;
 import com.finchy.pipeorgans.block.piccolo.PiccoloBlock;
 import com.finchy.pipeorgans.block.piccolo.PiccoloExtensionBlock;
+import com.finchy.pipeorgans.block.generic.chordophones.GenericChordophoneStringBlock;
 import com.finchy.pipeorgans.block.string.TiedFenceBlock;
-import com.finchy.pipeorgans.block.string.VerticalStringBlock;
 import com.finchy.pipeorgans.block.subbass.SubbassBlock;
 import com.finchy.pipeorgans.block.subbass.SubbassExtensionBlock;
 import com.finchy.pipeorgans.block.trompette.TrompetteBlock;
@@ -82,8 +82,8 @@ public class AllBlocks {
             () -> new TrompetteExtensionBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)
                     .requiresCorrectToolForDrops()));
 
-    public static final RegistryObject<VerticalStringBlock> VERTICAL_STRING = registerBlockWithoutItem("vertical_string",
-            () -> new VerticalStringBlock(BlockBehaviour.Properties.copy(Blocks.TRIPWIRE)));
+    public static final RegistryObject<GenericChordophoneStringBlock> HARP_STRING = registerBlockWithoutItem("harp_string",
+            () -> new GenericChordophoneStringBlock(BlockBehaviour.Properties.of().instabreak(), AllItems.TEST_CHORDOPHONE_STRING));
 
     public static final RegistryObject<TiedFenceBlock> TIED_FENCE = registerBlockWithoutItem("tied_fence",
             () -> new TiedFenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_FENCE)));

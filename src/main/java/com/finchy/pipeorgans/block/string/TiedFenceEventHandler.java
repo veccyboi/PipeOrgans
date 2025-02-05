@@ -70,7 +70,7 @@ public class TiedFenceEventHandler {
     }
 
     private static void createFences(BlockPos startPos, int height, Level level) {
-        BlockState verticalString = AllBlocks.VERTICAL_STRING.get().defaultBlockState();
+        BlockState verticalString = AllBlocks.HARP_STRING.get().defaultBlockState();
         for (int i = 1; i < height; i++) {
             level.setBlock(startPos.above(i), verticalString, 2);
         }

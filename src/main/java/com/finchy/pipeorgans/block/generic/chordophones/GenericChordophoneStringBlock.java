@@ -1,10 +1,10 @@
-package com.finchy.pipeorgans.block.string;
+package com.finchy.pipeorgans.block.generic.chordophones;
 
 
 import com.finchy.pipeorgans.init.AllBlocks;
 import com.finchy.pipeorgans.init.AllTags;
+import com.finchy.pipeorgans.item.generic.GenericChordophoneStringItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -20,18 +20,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
-public class VerticalStringBlock extends Block {
+public class GenericChordophoneStringBlock extends Block {
 
     public static final IntegerProperty THICKNESS = IntegerProperty.create("thickness", 1, 5);
 
-    public VerticalStringBlock(Properties pProperties) {
+    public RegistryObject<? extends GenericChordophoneStringItem> stringItem;
+
+    public GenericChordophoneStringBlock(Properties pProperties, RegistryObject<? extends GenericChordophoneStringItem> stringItem) {
         super(pProperties);
         registerDefaultState(defaultBlockState()
                 .setValue(THICKNESS, 1));
+        this.stringItem = stringItem;
     }
 
     @Override
@@ -43,11 +45,8 @@ public class VerticalStringBlock extends Block {
 
     /* left to do:
       - add model
-      - add placement between two fences with string (mixins)
-      - run through the whole chain of string to change thickness
-      - add block drop of string equal to how thick the string is
-      - pick block
-      - drop string when removing
+      ✅ move placement to seperate items to allow different kinds of chordophones
+      ✅ run through the whole chain of string to change thickness
       - other shit probably
       - add sounds
     */
@@ -61,46 +60,25 @@ public class VerticalStringBlock extends Block {
 
         if (CurrentThickness < 5 && handStack.is(AllTags.Items.ADDS_STRING_THICKNESS)) {
 
-            BlockState newState = pState.setValue(THICKNESS, CurrentThickness + 1);
-            pLevel.setBlock(pPos, newState, 2);
-            onThicknessModification(handStack, pPlayer, pHand);
+            thickenAttachedString(CurrentThickness + 1, pPos, pLevel);
+            consumeThicknessModificationItems(handStack, pPlayer, pHand);
 
         } else if (CurrentThickness > 1 && handStack.is(AllTags.Items.REMOVES_STRING_THICKNESS)) {
 
-            BlockState newState = pState.setValue(THICKNESS, CurrentThickness - 1);
-            pLevel.setBlock(pPos, newState, 2);
-            onThicknessModification(handStack, pPlayer, pHand);
+            thickenAttachedString(CurrentThickness - 1, pPos, pLevel);
+            consumeThicknessModificationItems(handStack, pPlayer, pHand);
         }
         else if (!pPlayer.isCrouching()){
             return InteractionResult.PASS;
         }
         else {
-            //passTheFunkyBeatToTheFence(pLevel, pPos);
+            //play sounds here
         }
 
         return InteractionResult.SUCCESS;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void passTheFunkyBeatToTheFence(Level level, BlockPos pos) {
-
-
-        int blocksChecked = 0;
-        while (blocksChecked <= 12) {
-            Block blockBelow = level.getBlockState(pos.below(blocksChecked)).getBlock();
-
-            if (blockBelow instanceof VerticalStringBlock) {
-                ++blocksChecked;
-            } else if (blockBelow instanceof TiedFenceBlock) {
-                //tell TiedFenceBlock to ring
-                break;
-            } else {
-                break;
-            }
-        }
-    }
-
-    private void onThicknessModification(ItemStack stack, Player player, InteractionHand hand) {
+    private void consumeThicknessModificationItems(ItemStack stack, Player player, InteractionHand hand) {
         if (player.isCreative()) return;
 
         if (stack.is(AllTags.Items.STRING_THICKNESS_DAMAGES)) {
@@ -118,8 +96,28 @@ public class VerticalStringBlock extends Block {
         while (-2 < direction) {
             Block activeBlock = level.getBlockState(pos.above(heightOffset)).getBlock();
 
-            if (activeBlock instanceof VerticalStringBlock) {
+            if (activeBlock instanceof GenericChordophoneStringBlock) {
                 level.setBlock(pos.above(heightOffset), Blocks.AIR.defaultBlockState(), 2);
+                heightOffset += direction;
+                continue;
+            }
+            else {
+                direction -= 2;
+                heightOffset = -1;
+            }
+        }
+    }
+
+    protected void thickenAttachedString(int newThickness, BlockPos pos, LevelAccessor level) {
+
+        int direction = 1;
+        int heightOffset = 0;
+
+        while (-2 < direction) {
+            Block activeBlock = level.getBlockState(pos.above(heightOffset)).getBlock();
+
+            if (activeBlock instanceof GenericChordophoneStringBlock) {
+                level.setBlock(pos.above(heightOffset), AllBlocks.HARP_STRING.get().defaultBlockState().setValue(THICKNESS, newThickness), 2);
                 heightOffset += direction;
                 continue;
             }
@@ -137,7 +135,7 @@ public class VerticalStringBlock extends Block {
 
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        return pLevel.getBlockState(pPos.below()).is(AllBlocks.VERTICAL_STRING.get()) && pLevel.getBlockState(pPos.below()).is(AllBlocks.TIED_FENCE.get());
+        return pLevel.getBlockState(pPos.below()).is(AllBlocks.HARP_STRING.get()) && pLevel.getBlockState(pPos.below()).is(AllBlocks.TIED_FENCE.get());
     }
 
     @Override
