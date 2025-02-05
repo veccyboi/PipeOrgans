@@ -4,6 +4,7 @@ package com.finchy.pipeorgans.block.string;
 import com.finchy.pipeorgans.init.AllBlocks;
 import com.finchy.pipeorgans.init.AllTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -11,8 +12,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -97,10 +100,6 @@ public class VerticalStringBlock extends Block {
         }
     }
 
-    protected void packUpCommaItsTimeToGoHome() {
-
-    }
-
     private void onThicknessModification(ItemStack stack, Player player, InteractionHand hand) {
         if (player.isCreative()) return;
 
@@ -108,6 +107,26 @@ public class VerticalStringBlock extends Block {
             stack.hurtAndBreak(1, player, e -> e.broadcastBreakEvent(hand));
         } else if (stack.is(AllTags.Items.STRING_THICKNESS_USES)) {
             stack.shrink(1);
+        }
+    }
+
+    protected void killAttachedString(BlockPos pos, LevelAccessor level) {
+
+        int direction = 1;
+        int heightOffset = 1;
+
+        while (-2 < direction) {
+            Block activeBlock = level.getBlockState(pos.above(heightOffset)).getBlock();
+
+            if (activeBlock instanceof VerticalStringBlock) {
+                level.setBlock(pos.above(heightOffset), Blocks.AIR.defaultBlockState(), 2);
+                heightOffset += direction;
+                continue;
+            }
+            else {
+                direction -= 2;
+                heightOffset = -1;
+            }
         }
     }
 
@@ -119,5 +138,15 @@ public class VerticalStringBlock extends Block {
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
         return pLevel.getBlockState(pPos.below()).is(AllBlocks.VERTICAL_STRING.get()) && pLevel.getBlockState(pPos.below()).is(AllBlocks.TIED_FENCE.get());
+    }
+
+    @Override
+    public void destroy(LevelAccessor pLevel, BlockPos pPos, BlockState pState)
+    {
+        if (pLevel instanceof Level) {
+            Block.popResource((Level) pLevel, pPos, new ItemStack(Items.STRING, pState.getValue(THICKNESS)));
+        }
+
+        killAttachedString(pPos, pLevel);
     }
 }
