@@ -1,5 +1,9 @@
 {
   "variants": {
-    "thickness=1": {"model": "pipeorgans:block/harp/harp_string"}
+    "thickness=1": {"model": "pipeorgans:block/harp/harp_string"},
+    "thickness=2": {"model": "pipeorgans:block/harp/harp_string"},
+    "thickness=3": {"model": "pipeorgans:block/harp/harp_string"},
+    "thickness=4": {"model": "pipeorgans:block/harp/harp_string"},
+    "thickness=5": {"model": "pipeorgans:block/harp/harp_string"}
   }
 }

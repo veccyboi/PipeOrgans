@@ -83,7 +83,7 @@ public class AllBlocks {
                     .requiresCorrectToolForDrops()));
 
     public static final RegistryObject<GenericChordophoneStringBlock> HARP_STRING = registerBlockWithoutItem("harp_string",
-            () -> new GenericChordophoneStringBlock(BlockBehaviour.Properties.of().instabreak(), AllItems.TEST_CHORDOPHONE_STRING));
+            () -> new GenericChordophoneStringBlock(BlockBehaviour.Properties.of().instabreak().noCollission(), AllItems.TEST_CHORDOPHONE_STRING));
 
     public static final RegistryObject<TiedFenceBlock> TIED_FENCE = registerBlockWithoutItem("tied_fence",
             () -> new TiedFenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_FENCE)));
